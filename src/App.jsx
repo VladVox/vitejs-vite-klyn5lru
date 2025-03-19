@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import Popup from './Popup';
 import './App.css';
 
 const API_URL =
@@ -34,7 +35,7 @@ const Products = () => {
           <div
             key={p._id}
             className="product-card"
-            onClick={() => selectedProduct(p)}
+            onClick={() => setSelectedProduct(p)}
           >
             <img
               src={`https://bilder.ngdata.no/${p._source.imagePath}/medium.jpg`}
@@ -48,7 +49,7 @@ const Products = () => {
       </div>
 
       {selectedProduct && (
-        <ProductPopup
+        <Popup
           product={selectedProduct}
           onClose={() => setSelectedProduct(null)}
         />
