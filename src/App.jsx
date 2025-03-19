@@ -7,53 +7,29 @@ const API_URL =
 
 const Products = () => {
   const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selected, setSelected] = useState(null);
 
   useEffect(() => {
     fetch(API_URL)
-      .then((res) => res.json())
-      .then((data) => {
-        setProducts(data.hits?.hits || []);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setError('Feil ved henting av data');
-        setLoading(false);
-      });
+      .then(res => res.json())
+      .then(data => setProducts(data.hits?.hits || []))
+      .catch(() => alert('Feil ved henting av data'));
   }, []);
-
-  if (loading) return <div>Laster inn produkter...</div>;
-  if (error) return <div>{error}</div>;
 
   return (
     <div>
       <h1>Produkter</h1>
       <div className="products-grid">
         {products.map((p) => (
-          <div
-            key={p._id}
-            className="product-card"
-            onClick={() => setSelectedProduct(p)}
-          >
-            <img
-              src={`https://bilder.ngdata.no/${p._source.imagePath}/medium.jpg`}
-              alt={p._source.title}
-            />
-            <h2>{p._source.title || 'Uten navn'}</h2>
-            <p>{p._source.subtitle}</p>
-            <p>{p._source.pricePerUnitOriginal} kr</p>
+          <div key={p._id} className="product-card" onClick={() => setSelected(p)}>
+            <img src={`https://bilder.ngdata.no/${p._source?.imagePath}/medium.jpg`} alt={p._source?.title || 'Uten navn'} />
+            <h2>{p._source?.title || 'Uten navn'}</h2>
+            <p>{p._source?.subtitle || ''}</p>
+            <p>{p._source?.pricePerUnitOriginal || 'N/A'} kr</p>
           </div>
         ))}
       </div>
-
-      {selectedProduct && (
-        <Popup
-          product={selectedProduct}
-          onClose={() => setSelectedProduct(null)}
-        />
-      )}
+      {selected && <Popup product={selected} onClose={() => setSelected(null)} />}
     </div>
   );
 };

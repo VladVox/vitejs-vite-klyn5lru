@@ -1,24 +1,26 @@
 import React from 'react';
-import './App.css';
 
 const Popup = ({ product, onClose }) => {
-  if (!product) return null;
-
-  return (
+  const { _source } = product || {};
+  return _source ? (
     <div className="popup-overlay" onClick={onClose}>
       <div className="popup-content" onClick={(e) => e.stopPropagation()}>
-        <button className="close-button" onClick={onClose}>&times;</button>
-        <img
-          src={`https://bilder.ngdata.no/${product._source.imagePath}/medium.jpg`}
-          alt={product._source.title}
-        />
-        <h2>{product._source.title || 'Uten navn'}</h2>
-        <p>{product._source.subtitle}</p>
-        <p>{product._source.pricePerUnitOriginal} kr</p>
-        <button className='add-to-cart'>Add to cart</button>
+        <button className="close-btn"onClick={onClose}>&times;</button>
+        <img src={`https://bilder.ngdata.no/${_source.imagePath}/medium.jpg`} alt={_source.title || 'Uten navn'} />
+        <h2>{_source.title || 'Uten navn'}</h2>
+        <p>{_source.subtitle || ''}</p>
+        {_source.nutritionalContent?.length > 0 && (
+          <ul>
+            {_source.nutritionalContent.map((n, i) => (
+              <li key={i}>{n.displayName}: {n.amount} {n.unit}</li>
+            ))}
+          </ul>
+        )}
+        <p><strong>Pris:</strong> {_source.pricePerUnitOriginal || 'N/A'} kr</p>
+        <button className="add-to-cart">Add to cart</button>
       </div>
     </div>
-  );
+  ) : null;
 };
 
 export default Popup;
